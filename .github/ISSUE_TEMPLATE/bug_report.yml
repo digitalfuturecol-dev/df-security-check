@@ -1,0 +1,25 @@
+name: Reporte de error / Bug report
+description: Algo no funciona como esperabas. / Something doesn't work as expected.
+labels: [ bug ]
+body:
+  - type: markdown
+    attributes:
+      value: "¿Es una vulnerabilidad del plugin? No la reportes aquí: usa Security → Report a vulnerability. / Security issue? Use Security → Report a vulnerability instead."
+  - type: textarea
+    id: what
+    attributes:
+      label: Qué pasó / What happened
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versiones / Versions
+      placeholder: "Plugin 1.1.0 · WordPress 7.1 · PHP 8.4.27 · Hosting"
+    validations:
+      required: true
+  - type: textarea
+    id: report
+    attributes:
+      label: Reporte / Report
+      description: Adjunta el reporte descargado si puedes (puedes borrar el nombre del sitio). / Attach the downloaded report if possible.

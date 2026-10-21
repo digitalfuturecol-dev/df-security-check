@@ -1,0 +1,24 @@
+name: Aviso de seguridad de PHP / PHP security advisory
+description: Falta un aviso o hay un dato incorrecto en advisories.json. / Missing or wrong advisory data.
+labels: [ data ]
+body:
+  - type: input
+    id: cves
+    attributes:
+      label: CVE
+      placeholder: CVE-2026-XXXXX
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Fuente oficial / Official source
+      description: Enlace a php.net o a un GitHub Security Advisory de php/php-src. / Link to php.net or a php/php-src GitHub Security Advisory.
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Versiones afectadas y corregidas / Affected and fixed versions
+    validations:
+      required: true

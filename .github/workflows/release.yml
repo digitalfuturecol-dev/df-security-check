@@ -1,0 +1,26 @@
+name: Release
+
+# Al publicar una etiqueta vX.Y.Z se genera df-security-check.zip y se adjunta a la versión.
+on:
+  push:
+    tags: [ 'v*' ]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check version matches tag
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          grep -q "define( 'DFSC_VERSION', '${TAG}' );" df-security-check.php || { echo "DFSC_VERSION does not match tag ${TAG}"; exit 1; }
+          grep -q "^Stable tag: ${TAG}$" readme.txt || { echo "readme.txt Stable tag does not match ${TAG}"; exit 1; }
+      - name: Build zip
+        run: bash bin/build-zip.sh
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" build/df-security-check.zip --title "$GITHUB_REF_NAME" --notes-file <(awk '/^## /{n++} n==1' CHANGELOG.md)

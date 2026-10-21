@@ -1,0 +1,59 @@
+{
+	"schema": 1,
+	"updated": "2026-10-21",
+	"recommended_branch": "8.4",
+	"eol": {
+		"5.6": "2018-12-31",
+		"7.0": "2019-01-10",
+		"7.1": "2019-12-01",
+		"7.2": "2020-11-30",
+		"7.3": "2021-12-06",
+		"7.4": "2022-11-28",
+		"8.0": "2023-11-26",
+		"8.1": "2025-12-31",
+		"8.2": "2026-12-31",
+		"8.3": "2027-12-31",
+		"8.4": "2028-12-31",
+		"8.5": "2029-12-31"
+	},
+	"advisories": [
+		{
+			"id": "php2shell",
+			"cves": [ "CVE-2026-109618", "CVE-2026-109619" ],
+			"severity": "critical",
+			"cvss": "CVSS v4.0 9.2",
+			"date": "2026-10-21",
+			"min_affected": "5.4.0",
+			"fixed": { "8.2": "8.2.35", "8.3": "8.3.36", "8.4": "8.4.27", "8.5": "8.5.12" },
+			"mitigation": true,
+			"url": "https://www.php.net/archive/2026.php",
+			"title": {
+				"en": "php2shell: unauthenticated remote code execution",
+				"es": "php2shell: ejecución remota de código sin autenticación"
+			},
+			"summary": {
+				"en": "CVE-2026-109618: out-of-memory corruption while request data is only partially initialized (highest risk with mod_php). CVE-2026-109619: stale global state reused by a later request in the same worker. Affects PHP 5.4 and later. Early attacks have been reported.",
+				"es": "CVE-2026-109618: corrupción por falta de memoria mientras los datos de la petición están a medio inicializar (mayor riesgo con mod_php). CVE-2026-109619: estado global obsoleto que reutiliza una petición posterior en el mismo proceso. Afecta a PHP 5.4 y posteriores. Se han reportado ataques tempranos."
+			}
+		},
+		{
+			"id": "php-2026-09",
+			"cves": [ "CVE-2026-91765", "CVE-2026-91766", "CVE-2026-91768" ],
+			"severity": "high",
+			"cvss": "up to CVSS 7.5",
+			"date": "2026-09-24",
+			"min_affected": "8.1.0",
+			"fixed": { "8.2": "8.2.34", "8.3": "8.3.35", "8.4": "8.4.26", "8.5": "8.5.11" },
+			"mitigation": false,
+			"url": "https://www.php.net/archive/2026.php",
+			"title": {
+				"en": "September 2026 security release",
+				"es": "Lanzamiento de seguridad de septiembre de 2026"
+			},
+			"summary": {
+				"en": "Unauthenticated SoapServer crash, Authorization/Cookie headers leaked on HTTP redirects, and PHP-FPM listen.allowed_clients bypass over IPv6, among others.",
+				"es": "Caída de SoapServer sin autenticación, fuga de las cabeceras Authorization/Cookie en redirecciones HTTP y evasión de listen.allowed_clients de PHP-FPM sobre IPv6, entre otras."
+			}
+		}
+	]
+}
