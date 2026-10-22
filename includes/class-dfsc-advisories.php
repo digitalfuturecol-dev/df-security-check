@@ -45,7 +45,9 @@ class DFSC_Advisories {
 
 		$bundled = self::validate( json_decode( (string) file_get_contents( DFSC_DIR . 'data/advisories.json' ), true ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- archivo local del plugin.
 		$data    = $bundled;
-		$data['source'] = 'bundled';
+		if ( $data ) {
+			$data['source'] = 'bundled';
+		}
 
 		$remote = self::remote_data( $force );
 		if ( $remote && ( ! $bundled || $remote['updated'] >= $bundled['updated'] ) ) {
@@ -194,7 +196,11 @@ class DFSC_Advisories {
 		}
 
 		$texts = array();
-		foreach ( array( 'title' => 200, 'summary' => 1500 ) as $field => $max ) {
+		$limits = array(
+			'title'   => 200,
+			'summary' => 1500,
+		);
+		foreach ( $limits as $field => $max ) {
 			foreach ( $a[ $field ] as $lang => $text ) {
 				if ( preg_match( '/^[a-z]{2}$/', (string) $lang ) && is_string( $text ) ) {
 					$texts[ $field ][ $lang ] = mb_substr( wp_strip_all_tags( $text ), 0, $max );

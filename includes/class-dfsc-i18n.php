@@ -11,25 +11,52 @@
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Traducción y formato de fechas en el idioma del sitio.
+ */
 class DFSC_I18n {
 
+	/**
+	 * Código de dos letras del idioma del sitio.
+	 *
+	 * @var string|null
+	 */
 	private static $lang = null;
+
+	/**
+	 * Traducciones cargadas: texto en inglés => traducción.
+	 *
+	 * @var array|null
+	 */
 	private static $dict = null;
 
-	/** Idioma del sitio, no del usuario: el reporte debe coincidir con el sitio. */
+	/**
+	 * Idioma del sitio, no del usuario: el reporte debe coincidir con el sitio.
+	 *
+	 * @return string
+	 */
 	public static function lang() {
 		if ( null === self::$lang ) {
-			$locale     = get_locale();
-			self::$lang = strtolower( substr( $locale, 0, 2 ) );
+			self::$lang = strtolower( substr( get_locale(), 0, 2 ) );
 		}
 		return self::$lang;
 	}
 
-	/** Etiqueta para el atributo lang del HTML (es-CO, en-US…). */
+	/**
+	 * Etiqueta para el atributo lang del HTML (es-CO, en-US…).
+	 *
+	 * @return string
+	 */
 	public static function html_lang() {
 		return str_replace( '_', '-', get_locale() );
 	}
 
+	/**
+	 * Traduce un texto al idioma del sitio.
+	 *
+	 * @param string $text Texto en inglés.
+	 * @return string
+	 */
 	public static function t( $text ) {
 		if ( null === self::$dict ) {
 			self::$dict = array();
@@ -44,25 +71,29 @@ class DFSC_I18n {
 		return isset( self::$dict[ $text ] ) ? self::$dict[ $text ] : $text;
 	}
 
-	/** Fecha en el formato y el idioma del sitio. */
+	/**
+	 * Fecha en el idioma del sitio, sin depender del paquete de idioma de WordPress instalado.
+	 *
+	 * @param int|string $timestamp_or_ymd Marca de tiempo Unix o fecha AAAA-MM-DD.
+	 * @return string
+	 */
 	public static function date( $timestamp_or_ymd ) {
-		$ts    = is_numeric( $timestamp_or_ymd ) ? (int) $timestamp_or_ymd : strtotime( $timestamp_or_ymd . ' 12:00:00' );
 		if ( is_numeric( $timestamp_or_ymd ) ) {
-			$ts += (int) ( (float) get_option( 'gmt_offset' ) * HOUR_IN_SECONDS ); // Hora local del sitio.
+			// Hora local del sitio.
+			$ts = (int) $timestamp_or_ymd + (int) ( (float) get_option( 'gmt_offset' ) * HOUR_IN_SECONDS );
+		} else {
+			$ts = strtotime( $timestamp_or_ymd . ' 12:00:00' );
 		}
-		// Formato propio para no depender del paquete de idioma de WordPress instalado.
 		return dfsc_t( '%2$s %1$d, %3$d', (int) gmdate( 'j', $ts ), dfsc_t( gmdate( 'F', $ts ) ), (int) gmdate( 'Y', $ts ) );
 	}
 
+	/**
+	 * Hora en formato de 24 horas, en la zona horaria del sitio.
+	 *
+	 * @param int $timestamp Marca de tiempo Unix.
+	 * @return string
+	 */
 	public static function time( $timestamp ) {
 		return wp_date( 'H:i', $timestamp );
 	}
-}
-
-/**
- * Traduce un texto al idioma del sitio. Acepta argumentos estilo sprintf.
- */
-function dfsc_t( $text, ...$args ) {
-	$out = DFSC_I18n::t( $text );
-	return $args ? vsprintf( $out, $args ) : $out;
 }

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.1 — 2026-10-21
+
+- El código cumple los WordPress Coding Standards (revisión automática en verde).
+- Corrección: si los datos incluidos en el plugin estuvieran dañados, ahora se usa correctamente el respaldo seguro.
+- Correo de contacto de seguridad en SECURITY.md: develop@digitalfuture.com.co.
+- La función `dfsc_t()` pasa a `includes/functions.php`.
+
 ## 1.1.0 — 2026-10-21
 
 Primera versión pública.

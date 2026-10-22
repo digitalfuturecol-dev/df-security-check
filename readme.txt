@@ -5,7 +5,7 @@ Tags: security, php, vulnerabilities, report, cve
 Requires at least: 6.2
 Tested up to: 7.2
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv2 or later
 
 Diagnóstico de seguridad del sitio con recomendación de actualización de PHP y reporte de estado en el idioma del sitio.
@@ -65,6 +65,11 @@ Este plugin se conecta a dos servicios externos. No envía ningún dato del siti
 * GitHub (https://raw.githubusercontent.com/digitalfuturecol-dev/df-security-check/main/data/advisories.json): descarga los datos de vulnerabilidades actualizados, como máximo cada 12 horas. Términos: https://docs.github.com/site-policy/github-terms/github-terms-of-service · Privacidad: https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement
 
 == Changelog ==
+
+= 1.1.1 =
+* El código cumple los WordPress Coding Standards.
+* Corrección: si los datos incluidos en el plugin estuvieran dañados, ahora se usa correctamente el respaldo seguro.
+* Correo de contacto de seguridad: develop@digitalfuture.com.co.
 
 = 1.1.0 =
 * Primera versión pública.
