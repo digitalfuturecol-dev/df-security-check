@@ -4,7 +4,7 @@
 
 Si encuentras una vulnerabilidad en DF Security Check, **no abras un issue público**.
 
-Repórtala de forma privada desde la pestaña **Security → Report a vulnerability** de este repositorio (GitHub Private Vulnerability Reporting).
+Repórtala de forma privada desde la pestaña **Security → Report a vulnerability** de este repositorio (GitHub Private Vulnerability Reporting), o escribe a **develop@digitalfuture.com.co** con el asunto `[SECURITY] DF Security Check`.
 
 Incluye la versión del plugin, los pasos para reproducirla y el impacto que observaste.
 
@@ -27,4 +27,4 @@ El plugin descarga `data/advisories.json` desde la rama `main` de este repositor
 
 ## Reporting a vulnerability
 
-Please **do not open a public issue**. Report it privately through **Security → Report a vulnerability** in this repository. We acknowledge reports within 3 business days and credit reporters who wish to be named. Only the latest release receives security fixes.
+Please **do not open a public issue**. Report it privately through **Security → Report a vulnerability** in this repository, or email **develop@digitalfuture.com.co** with the subject `[SECURITY] DF Security Check`. We acknowledge reports within 3 business days and credit reporters who wish to be named. Only the latest release receives security fixes.
