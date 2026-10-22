@@ -27,10 +27,13 @@ Reglas (el plugin descarta el aviso completo si alguna no se cumple):
 - `id`: minúsculas, números y guiones; único.
 - `cves`: formato `CVE-AAAA-NNNN`.
 - `severity`: `critical`, `high`, `medium` o `low`. Solo `critical` marca el sitio como crítico.
+- `cvss`: texto corto con la versión de CVSS y el puntaje, por ejemplo `CVSS v4.0 9.2`. Se muestra en el reporte.
+- `date`: fecha de publicación del aviso (`AAAA-MM-DD`). Se muestra en el reporte.
+- `mitigation`: `true` si la mitigación temporal del plugin (`session.upload_progress.enabled = 0`) reduce el riesgo de este aviso. Solo entonces se ofrece el botón **Aplicar mitigación**.
 - `min_affected`: primera versión afectada (`X.Y.Z`).
 - `fixed`: primera versión corregida **de cada rama con soporte**. Las ramas anteriores a la más antigua listada se consideran sin corrección oficial.
 - `title` y `summary`: texto plano (sin HTML), con `en` obligatorio. Agrega `es` y los idiomas que puedas.
-- `url`: `https://` a la fuente oficial.
+- `url`: `https://` a la fuente oficial. Se muestra en el reporte como enlace **Aviso oficial**.
 
 Además:
 

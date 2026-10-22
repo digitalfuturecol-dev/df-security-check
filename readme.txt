@@ -1,11 +1,10 @@
 === DF Security Check ===
 Contributors: digitalfuture
-Donate link: https://digitalfuture.com.co
 Tags: security, php, vulnerabilities, report, cve
 Requires at least: 6.2
-Tested up to: 7.2
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GPLv2 or later
 
 Diagnóstico de seguridad del sitio con recomendación de actualización de PHP y reporte de estado en el idioma del sitio.
@@ -66,17 +65,12 @@ Este plugin se conecta a dos servicios externos. No envía ningún dato del siti
 
 == Changelog ==
 
+= 1.1.2 =
+* Cada vulnerabilidad del reporte muestra su gravedad (CVSS), la fecha de publicación y un enlace al aviso oficial.
+* La mitigación temporal solo se ofrece cuando hay una vulnerabilidad abierta que la tiene.
+
 = 1.1.1 =
-* El código cumple los WordPress Coding Standards.
-* Corrección: si los datos incluidos en el plugin estuvieran dañados, ahora se usa correctamente el respaldo seguro.
-* Correo de contacto de seguridad: develop@digitalfuture.com.co.
+* Si los datos incluidos en el plugin estuvieran dañados, ahora se usa correctamente el respaldo seguro.
 
 = 1.1.0 =
 * Primera versión pública.
-* Datos de vulnerabilidades actualizables desde el repositorio del proyecto, con validación estricta y fecha visible en el reporte.
-* Opción para desactivar las conexiones externas.
-* Detección de alt-php de CloudLinux y de paquetes de Debian, Ubuntu y RHEL.
-* Mejoras de seguridad en el envío por correo y en la mitigación.
-
-= 1.0.0 =
-* Versión de prueba interna.

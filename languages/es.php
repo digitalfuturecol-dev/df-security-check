@@ -169,4 +169,7 @@ return array (
   'Online data' => 'Datos en línea',
   'Check php.net for the latest PHP releases and the project repository on GitHub for new vulnerability data.' => 'Consultar en php.net las últimas versiones de PHP y en el repositorio del proyecto en GitHub los nuevos datos de vulnerabilidades.',
   'Only public files are downloaded. No information about this site is sent.' => 'Solo se descargan archivos públicos. No se envía ninguna información de este sitio.',
+  'Published on %s.' => 'Publicado el %s.',
+  'Official advisory' => 'Aviso oficial',
+  'PHP no longer needs the temporary mitigation. Remove it with the "Remove mitigation" button.' => 'PHP ya no necesita la mitigación temporal. Retírala con el botón "Retirar mitigación".',
 );
