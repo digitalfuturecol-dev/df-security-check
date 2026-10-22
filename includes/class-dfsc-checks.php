@@ -27,15 +27,22 @@ class DFSC_Checks {
 		$version    = DFSC_Advisories::runtime_version();
 		$advisories = DFSC_Advisories::evaluate( $version );
 		$vulnerable = false;
+		$mitigable  = false;
 		foreach ( $advisories as $adv ) {
-			if ( 'patched' !== $adv['status'] && 'critical' === $adv['severity'] ) {
+			if ( 'patched' === $adv['status'] ) {
+				continue;
+			}
+			if ( 'critical' === $adv['severity'] ) {
 				$vulnerable = true;
+			}
+			if ( $adv['mitigation'] ) {
+				$mitigable = true;
 			}
 		}
 
 		$checks = array_merge(
 			self::php_checks( $version, $advisories, $force ),
-			self::config_checks( $vulnerable ),
+			self::config_checks( $mitigable ),
 			self::wordpress_checks()
 		);
 
@@ -62,8 +69,8 @@ class DFSC_Checks {
 			'overall'        => $overall,
 			'counts'         => $counts,
 			'php_vulnerable' => $vulnerable,
+			'mitigable'      => $mitigable,
 			'recommendation' => self::php_recommendation( $version, $advisories, $force ),
-			'advisories'     => $advisories,
 			'checks'         => $checks,
 			'environment'    => self::environment(),
 			'mitigation'     => DFSC_Mitigation::status(),
@@ -109,8 +116,12 @@ class DFSC_Checks {
 		// Vulnerabilidades conocidas.
 		foreach ( $advisories as $adv ) {
 			$label = DFSC_Advisories::text( $adv, 'title' ) . ' (' . implode( ', ', $adv['cves'] ) . ')';
+			$facts = dfsc_t( 'Published on %s.', DFSC_I18n::date( $adv['date'] ) );
+			if ( '' !== $adv['cvss'] ) {
+				$facts = $adv['cvss'] . '. ' . $facts;
+			}
 			if ( 'patched' === $adv['status'] ) {
-				$checks[] = self::item( 'adv_' . $adv['id'], 'php', $label, 'good', $version, dfsc_t( 'This PHP version includes the fix.' ) );
+				$checks[] = self::item( 'adv_' . $adv['id'], 'php', $label, 'good', $version, dfsc_t( 'This PHP version includes the fix.' ) . ' ' . $facts, $adv['url'], dfsc_t( 'Official advisory' ) );
 				continue;
 			}
 			$status = 'critical' === $adv['severity'] ? 'critical' : 'warning';
@@ -119,7 +130,7 @@ class DFSC_Checks {
 			} else {
 				$detail = dfsc_t( 'Affected. The fix is in PHP %s.', $adv['fixed_in'] );
 			}
-			$detail .= ' ' . DFSC_Advisories::text( $adv, 'summary' );
+			$detail .= ' ' . DFSC_Advisories::text( $adv, 'summary' ) . ' ' . $facts;
 			if ( 'no_fix' === $adv['status'] && DFSC_Advisories::is_cloudlinux_alt() ) {
 				$detail .= ' ' . dfsc_t( 'This server uses CloudLinux alt-php: CloudLinux or TuxCare may publish their own fix for this branch. Ask your hosting provider, but plan the move to a supported branch anyway.' );
 			}
@@ -128,7 +139,7 @@ class DFSC_Checks {
 				$detail .= ' ' . dfsc_t( 'This PHP comes from a distribution package (%s) that may include the fix without changing the version number. Confirm with your hosting provider.', PHP_VERSION );
 				$detail .= ' ' . dfsc_t( 'On the server you can check it with: %s', DFSC_Advisories::distro_check_command( $adv['cves'][0] ) );
 			}
-			$checks[] = self::item( 'adv_' . $adv['id'], 'php', $label, $status, $version, $detail );
+			$checks[] = self::item( 'adv_' . $adv['id'], 'php', $label, $status, $version, $detail, $adv['url'], dfsc_t( 'Official advisory' ) );
 		}
 
 		// Última versión de la rama.
@@ -179,7 +190,6 @@ class DFSC_Checks {
 			return array(
 				'needed'  => false,
 				'urgency' => 'none',
-				'target'  => $version,
 				'message' => dfsc_t( 'No PHP update is needed. PHP %s includes all known security fixes.', $version ),
 				'steps'   => array(),
 				'hosting' => self::detect_hosting(),
@@ -203,14 +213,11 @@ class DFSC_Checks {
 		}
 
 		return array(
-			'needed'        => true,
-			'urgency'       => $urgent ? 'urgent' : 'recommended',
-			'target'        => $target,
-			'target_branch' => $target_branch,
-			'same_branch'   => $branch_ok,
-			'message'       => $message,
-			'steps'         => self::update_steps( $hosting, $target_branch, $target, $branch_ok ),
-			'hosting'       => $hosting,
+			'needed'  => true,
+			'urgency' => $urgent ? 'urgent' : 'recommended',
+			'message' => $message,
+			'steps'   => self::update_steps( $hosting, $target_branch, $target, $branch_ok ),
+			'hosting' => $hosting,
 		);
 	}
 
@@ -338,7 +345,7 @@ class DFSC_Checks {
 	/**
 	 * Verificaciones de la configuración de PHP.
 	 *
-	 * @param bool $vulnerable Si PHP está afectado por un aviso crítico.
+	 * @param bool $vulnerable Si PHP está afectado por un aviso abierto que admite la mitigación temporal.
 	 * @return array
 	 */
 	private static function config_checks( $vulnerable ) {
@@ -546,24 +553,26 @@ class DFSC_Checks {
 	/**
 	 * Arma el resultado de una verificación.
 	 *
-	 * @param string $id     Identificador.
-	 * @param string $group  Grupo: php, config o wp.
-	 * @param string $label  Nombre visible.
-	 * @param string $status critical, warning, good o info.
-	 * @param string $value  Valor detectado.
-	 * @param string $detail Explicación.
-	 * @param string $link   Enlace opcional para corregir.
+	 * @param string $id         Identificador.
+	 * @param string $group      Grupo: php, config o wp.
+	 * @param string $label      Nombre visible.
+	 * @param string $status     critical, warning, good o info.
+	 * @param string $value      Valor detectado.
+	 * @param string $detail     Explicación.
+	 * @param string $link       Enlace opcional.
+	 * @param string $link_label Texto del enlace; por defecto "Corregir".
 	 * @return array
 	 */
-	private static function item( $id, $group, $label, $status, $value, $detail, $link = '' ) {
+	private static function item( $id, $group, $label, $status, $value, $detail, $link = '', $link_label = '' ) {
 		return array(
-			'id'     => $id,
-			'group'  => $group,
-			'label'  => $label,
-			'status' => $status,
-			'value'  => $value,
-			'detail' => $detail,
-			'link'   => $link,
+			'id'         => $id,
+			'group'      => $group,
+			'label'      => $label,
+			'status'     => $status,
+			'value'      => $value,
+			'detail'     => $detail,
+			'link'       => $link,
+			'link_label' => $link_label,
 		);
 	}
 }

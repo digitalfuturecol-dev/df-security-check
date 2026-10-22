@@ -88,7 +88,7 @@ class DFSC_Report {
 							<li><?php echo esc_html( $step ); ?></li>
 						<?php endforeach; ?>
 					</ol>
-					<?php if ( $r['php_vulnerable'] ) : ?>
+					<?php if ( ! empty( $r['mitigable'] ) ) : ?>
 						<p class="dfsc-note">
 							<?php
 							if ( $mit['applied'] && $mit['effective'] ) {
@@ -101,6 +101,9 @@ class DFSC_Report {
 							?>
 						</p>
 					<?php endif; ?>
+				<?php endif; ?>
+				<?php if ( empty( $r['mitigable'] ) && $mit['applied'] ) : ?>
+					<p class="dfsc-note"><?php echo esc_html( dfsc_t( 'PHP no longer needs the temporary mitigation. Remove it with the "Remove mitigation" button.' ) ); ?></p>
 				<?php endif; ?>
 			</div>
 
@@ -129,7 +132,7 @@ class DFSC_Report {
 							<td>
 								<?php echo esc_html( $c['detail'] ); ?>
 								<?php if ( ! empty( $c['link'] ) ) : ?>
-									<a class="dfsc-link" href="<?php echo esc_url( $c['link'] ); ?>"><?php echo esc_html( dfsc_t( 'Fix' ) ); ?> →</a>
+									<a class="dfsc-link" href="<?php echo esc_url( $c['link'] ); ?>"><?php echo esc_html( empty( $c['link_label'] ) ? dfsc_t( 'Fix' ) : $c['link_label'] ); ?> →</a>
 								<?php endif; ?>
 							</td>
 						</tr>

@@ -177,7 +177,7 @@ class DFSC_Admin {
 				<a class="button button-primary" href="<?php echo esc_url( self::action_url( 'download' ) ); ?>"><?php echo esc_html( dfsc_t( 'Download report' ) ); ?></a>
 				<a class="button" href="<?php echo esc_url( self::action_url( 'email' ) ); ?>"><?php echo esc_html( dfsc_t( 'Email report' ) ); ?></a>
 				<a class="button" href="<?php echo esc_url( self::action_url( 'refresh' ) ); ?>"><?php echo esc_html( dfsc_t( 'Run checks again' ) ); ?></a>
-				<?php if ( $r['php_vulnerable'] && ! $mit['applied'] && $mit['methods'] ) : ?>
+				<?php if ( ! empty( $r['mitigable'] ) && ! $mit['applied'] && $mit['methods'] ) : ?>
 					<a class="button" href="<?php echo esc_url( self::action_url( 'apply' ) ); ?>"><?php echo esc_html( dfsc_t( 'Apply mitigation' ) ); ?></a>
 				<?php endif; ?>
 				<?php if ( $mit['applied'] ) : ?>
