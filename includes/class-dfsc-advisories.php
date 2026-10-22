@@ -195,7 +195,7 @@ class DFSC_Advisories {
 			$fixed[ (string) $b ] = $v;
 		}
 
-		$texts = array();
+		$texts  = array();
 		$limits = array(
 			'title'   => 200,
 			'summary' => 1500,
