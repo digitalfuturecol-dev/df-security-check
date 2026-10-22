@@ -7,8 +7,17 @@
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Arma el reporte en HTML para el panel, la descarga y el correo.
+ */
 class DFSC_Report {
 
+	/**
+	 * Nombre visible de un estado.
+	 *
+	 * @param string $status critical, warning, good o info.
+	 * @return string
+	 */
 	public static function status_label( $status ) {
 		$map = array(
 			'critical' => dfsc_t( 'Critical' ),
@@ -19,6 +28,12 @@ class DFSC_Report {
 		return isset( $map[ $status ] ) ? $map[ $status ] : $status;
 	}
 
+	/**
+	 * Resumen del estado general.
+	 *
+	 * @param string $overall critical, warning o good.
+	 * @return string
+	 */
 	public static function overall_text( $overall ) {
 		$map = array(
 			'critical' => dfsc_t( 'The site has critical issues that must be fixed now.' ),
@@ -28,15 +43,20 @@ class DFSC_Report {
 		return $map[ $overall ];
 	}
 
-	/** Cuerpo del reporte, usado en el panel y dentro del documento descargable. */
+	/**
+	 * Cuerpo del reporte, usado en el panel y dentro del documento descargable.
+	 *
+	 * @param array $r Resultado de DFSC_Checks::run().
+	 * @return string HTML escapado.
+	 */
 	public static function body( array $r ) {
 		$groups = array(
-			'php'       => dfsc_t( 'PHP and known vulnerabilities' ),
-			'config'    => dfsc_t( 'Server configuration' ),
-			'wordpress' => dfsc_t( 'WordPress' ),
+			'php'    => dfsc_t( 'PHP and known vulnerabilities' ),
+			'config' => dfsc_t( 'Server configuration' ),
+			'wp'     => dfsc_t( 'WordPress' ),
 		);
-		$rec = $r['recommendation'];
-		$mit = $r['mitigation'];
+		$rec    = $r['recommendation'];
+		$mit    = $r['mitigation'];
 
 		ob_start();
 		?>
@@ -150,6 +170,11 @@ class DFSC_Report {
 		return ob_get_clean();
 	}
 
+	/**
+	 * Estilos del reporte.
+	 *
+	 * @return string
+	 */
 	public static function css() {
 		return '
 .dfsc-report{font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#1d2327;max-width:1100px}
@@ -196,7 +221,12 @@ class DFSC_Report {
 ';
 	}
 
-	/** Documento HTML completo, independiente del panel, en el idioma del sitio. */
+	/**
+	 * Documento HTML completo, independiente del panel, en el idioma del sitio.
+	 *
+	 * @param array $r Resultado de DFSC_Checks::run().
+	 * @return string
+	 */
 	public static function document( array $r ) {
 		$title = dfsc_t( 'Security status report' ) . ' — ' . wp_parse_url( home_url(), PHP_URL_HOST );
 		return '<!doctype html><html lang="' . esc_attr( DFSC_I18n::html_lang() ) . '"><head><meta charset="utf-8">'
@@ -207,6 +237,11 @@ class DFSC_Report {
 			. '</body></html>';
 	}
 
+	/**
+	 * Nombre del archivo del reporte.
+	 *
+	 * @return string
+	 */
 	public static function filename() {
 		$host = sanitize_file_name( (string) wp_parse_url( home_url(), PHP_URL_HOST ) );
 		return sanitize_file_name( dfsc_t( 'security-report' ) ) . '-' . $host . '-' . wp_date( 'Y-m-d' ) . '.html';
@@ -214,6 +249,10 @@ class DFSC_Report {
 
 	/**
 	 * Envía el reporte por correo (cuerpo HTML y archivo adjunto).
+	 *
+	 * @param array        $r  Resultado de DFSC_Checks::run().
+	 * @param string|array $to Destinatarios.
+	 * @return bool
 	 */
 	public static function email( array $r, $to ) {
 		$host    = wp_parse_url( home_url(), PHP_URL_HOST );
